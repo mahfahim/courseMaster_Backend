@@ -3,6 +3,9 @@
 const mongoose = require("mongoose");
 const dns = require("dns");
 
+// use Google's public DNS servers to resolve MongoDB Atlas SRV records
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
+
 // Ensure IPv4 first to resolve MongoDB Atlas SRV query issues on Windows
 if (dns.setDefaultResultOrder) {
   dns.setDefaultResultOrder("ipv4first");
@@ -35,7 +38,7 @@ const connectDB = async () => {
   try {
     // Connect with options optimized for serverless
     const connection = await mongoose.connect(uri, {
-      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+      serverSelectionTimeoutMS: 30000, // Timeout 30s
       socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
     });
     
